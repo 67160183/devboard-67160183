@@ -1,4 +1,4 @@
-function PostCard({ title, body }) {
+function PostCard({ title, body, isFavorite, onToggleFavorite }) {
   return (
     <div
       style={{
@@ -10,7 +10,23 @@ function PostCard({ title, body }) {
       }}
     >
       <h3 style={{ margin: "0 0 0.5rem", color: "#1e40af" }}>{title}</h3>
-      <p style={{ margin: 0, color: "#4a5568", lineHeight: 1.6 }}>{body}</p>
+      <p style={{ margin: "0 0 0.75rem", color: "#4a5568", lineHeight: 1.6 }}>
+        {body}
+      </p>
+
+      {/* เพิ่มปุ่มถูกใจ */}
+      <button
+        onClick={onToggleFavorite}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "1.2rem",
+          color: isFavorite ? "red" : "gray",
+        }}
+      >
+        {isFavorite ? "❤️ ถูกใจแล้ว" : "🤍 ถูกใจ"}
+      </button>
     </div>
   );
 }

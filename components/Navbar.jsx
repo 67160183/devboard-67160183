@@ -1,12 +1,33 @@
-function Navbar() {
+function Navbar({ favoriteCount }) {
   return (
     <nav
-      style={{ background: "#1e40af", color: "white", padding: "1rem 2rem" }}
+      style={{
+        background: "#1e40af",
+        color: "white",
+        padding: "1rem 2rem",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
     >
-      <h1 style={{ margin: 0, fontSize: "1.5rem" }}>DevBoard</h1>
-      <p style={{ margin: 0, fontSize: "0.9rem", opacity: 0.8 }}>
-        กระดานนักพัฒนา
-      </p>
+      <div>
+        <h1 style={{ margin: 0, fontSize: "1.5rem" }}>DevBoard</h1>
+        <p style={{ margin: 0, fontSize: "0.9rem", opacity: 0.8 }}>
+          กระดานนักพัฒนา
+        </p>
+      </div>
+
+      {/* ถ้ามีคนกดถูกใจ ให้โชว์กล่องนี้ */}
+      {favoriteCount > 0 && (
+        <div
+          style={{
+            background: "#e53e3e",
+            padding: "0.5rem",
+            borderRadius: "8px",
+          }}
+        >
+          ❤️ {favoriteCount} ถูกใจ
+        </div>
+      )}
     </nav>
   );
 }

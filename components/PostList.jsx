@@ -1,7 +1,15 @@
-import PostCard from "./PostCard";
-import PostCount from "./PostCount";
+import { useState } from "react"; // อย่าลืม import
+import PostCard from "../PostCard";
+// import PostCount from "../PostCount"; // ถ้ามีก็ใช้ได้ครับ
 
-function PostList({ posts }) {
+function PostList({ posts, favorites, onToggleFavorite }) {
+  const [search, setSearch] = useState("");
+
+  // กรองโพสต์
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <div>
       <h2
@@ -12,10 +20,25 @@ function PostList({ posts }) {
         }}
       >
         โพสต์ล่าสุด
-        <PostCount post={posts} />
       </h2>
-      {posts.map((post) => (
-        <PostCard key={post.id} title={post.title} body={post.body} />
+
+      {/* ช่องค้นหา */}
+      <input
+        type="text"
+        placeholder="ค้นหาโพสต์..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
+      />
+
+      {filteredPosts.map((post) => (
+        <PostCard
+          key={post.id}
+          title={post.title}
+          body={post.body}
+          isFavorite={favorites.includes(post.id)} // ส่งสถานะถูกใจ
+          onToggleFavorite={() => onToggleFavorite(post.id)} // ส่งฟังก์ชันกดถูกใจ
+        />
       ))}
     </div>
   );

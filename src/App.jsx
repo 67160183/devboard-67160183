@@ -1,13 +1,15 @@
 import { useState } from "react";
-
 import "./App.css";
+
+// นำเข้า Component ทั้งหมดให้ครบ
 import Navbar from "../components/Navbar";
-import PostCard from "../components/PostCard";
-import PostList from "../components/PostList";
+import PostList from "./components/PostList";
 import UserCard from "../components/UserCard";
+import AddPostForm from "../components/AddPostForm"; // 👈 ดึงฟอร์มเข้ามาใช้งานตรงนี้
 
 function App() {
-  const POSTS = [
+  // 1. สร้าง State สำหรับเก็บข้อมูลโพสต์ (ใช้ useState แทนตัวแปรธรรมดา)
+  const [posts, setPosts] = useState([
     {
       id: 1,
       title: "React คืออะไร?",
@@ -28,16 +30,38 @@ function App() {
       title: "Props ทำงานอย่างไร?",
       body: "Props คือ argument ที่ส่งให้ component เหมือนกับการส่งพารามิเตอร์ให้ฟังก์ชัน",
     },
-  ];
+  ]);
+
+  // 2. สร้าง State สำหรับเก็บรายการที่กดถูกใจ
+  const [favorites, setFavorites] = useState([]);
 
   const USERS = [
     { id: 1, name: "สมชาย ใจดี", email: "somchai@dev.com" },
     { id: 2, name: "สมหญิง รักเรียน", email: "somying@dev.com" },
     { id: 3, name: "วิชาญ โค้ดเก่ง", email: "wichan@dev.com" },
   ];
+
+  // 3. ฟังก์ชันจัดการเมื่อผู้ใช้กดปุ่ม ❤️
+  function handleToggleFavorite(postId) {
+    setFavorites(
+      (prev) =>
+        prev.includes(postId)
+          ? prev.filter((id) => id !== postId) // ถ้าเคยกดแล้ว ให้เอาออก
+          : [...prev, postId], // ถ้ายังไม่เคยกด ให้เพิ่มเข้าไป
+    );
+  }
+
+  // 4. ฟังก์ชันจัดการเมื่อผู้ใช้กด "โพสต์" จากใน AddPostForm
+  function handleAddPost({ title, body }) {
+    const newPost = { id: Date.now(), title, body };
+    setPosts((prev) => [newPost, ...prev]); // เอาโพสต์ใหม่ไปต่อหน้าโพสต์เดิม
+  }
+
   return (
     <>
-      <Navbar />
+      {/* ส่งจำนวนยอดคนถูกใจไปแสดงที่ Navbar */}
+      <Navbar favoriteCount={favorites.length} />
+
       <div
         style={{
           maxWidth: "900px",
@@ -48,10 +72,20 @@ function App() {
           gap: "2rem",
         }}
       >
+        {/* คอลัมน์ซ้าย */}
         <div>
-          <PostList posts={POSTS} />
+          {/* 👈 เรียกใช้ AddPostForm และส่งฟังก์ชันเพิ่มโพสต์ให้มัน */}
+          <AddPostForm onAddPost={handleAddPost} />
+
+          {/* เรียกใช้ PostList และส่งข้อมูล+ฟังก์ชันไปให้ */}
+          <PostList
+            posts={posts}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+          />
         </div>
 
+        {/* คอลัมน์ขวา */}
         <div>
           <h2
             style={{
