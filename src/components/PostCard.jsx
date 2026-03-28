@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CommentList from "./CommentList";
-import { useFavorites } from "../context/FavoritesContext";
+import { useFavorites } from "../../context/FavoritesContext";
 
 function PostCard({ post }) {
   const [showComments, setShowComments] = useState(false);

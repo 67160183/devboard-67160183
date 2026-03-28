@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import PostCard from "./PostCard";
-import PostCount from "./PostCount";
-import LoadingSpinner from "./LoadingSpinner";
-import { useFavorites } from "../context/FavoritesContext";
+import PostCard from "../PostCard";
+import PostCount from "../PostCount";
+import LoadingSpinner from "../LoadingSpinner";
+import { useFavorites } from "../../context/FavoritesContext";
 
 function PostList() {
   // ใช้ FavoritesContext เพื่อดึงรายการโพสต์ที่ถูกใจ
