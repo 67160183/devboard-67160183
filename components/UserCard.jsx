@@ -4,23 +4,13 @@ function UserCard({ name, email }) {
     .map((n) => n[0])
     .join("");
 
-  const charCode = name.charCodeAt(0);
-  const colorIndex = charCode % 3;
+  const firstLetter = name[0].toUpperCase();
+  let bg = "#3b82f6";
 
-  let avatarColor = "";
-  switch (colorIndex) {
-    case 0:
-      avatarColor = "blue";
-      break;
-    case 1:
-      avatarColor = "green";
-      break;
-    case 2:
-      avatarColor = "purple";
-      break;
-    default:
-      avatarColor = "blue";
-  }
+  if (firstLetter >= "A" && firstLetter <= "G") bg = "#3b82f6";
+  else if (firstLetter >= "H" && firstLetter <= "N") bg = "#22c55e";
+  else bg = "#a855f7";
+
   return (
     <div
       style={{
@@ -38,7 +28,7 @@ function UserCard({ name, email }) {
         style={{
           width: "40px",
           height: "40px",
-          background: avatarColor,
+          background: "#1e40af",
           color: "white",
           borderRadius: "50%",
           display: "flex",

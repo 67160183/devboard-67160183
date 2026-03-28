@@ -1,4 +1,5 @@
-function PostCount({ post }) {
-  return <p>({post.length} รายการ)</p>;
+function PostCount({ count }) {
+  return <p>โพสต์ทั้งหมด: {count} รายการ</p>;
 }
+
 export default PostCount;

@@ -1,108 +1,110 @@
 import { useState } from "react";
-import "./App.css";
 
-// นำเข้า Component ทั้งหมดให้ครบ
-import Navbar from "../components/Navbar";
-import PostList from "./components/PostList";
-import UserCard from "../components/UserCard";
-import AddPostForm from "../components/AddPostForm"; // 👈 ดึงฟอร์มเข้ามาใช้งานตรงนี้
+function AddPostForm({ onAddPost }) {
+  // เก็บค่าชื่อเรื่อง
+  const [title, setTitle] = useState("");
 
-function App() {
-  // 1. สร้าง State สำหรับเก็บข้อมูลโพสต์ (ใช้ useState แทนตัวแปรธรรมดา)
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "React คืออะไร?",
-      body: "React เป็น library สำหรับสร้าง UI ที่ทำให้ code อ่านง่ายและดูแลรักษาได้",
-    },
-    {
-      id: 2,
-      title: "ทำไมต้องใช้ Components?",
-      body: "Components ช่วยให้เราแบ่ง UI ออกเป็นชิ้นเล็ก ๆ ที่ reuse ได้",
-    },
-    {
-      id: 3,
-      title: "JSX คืออะไร?",
-      body: "JSX คือ syntax ที่ช่วยให้เราเขียน HTML ใน JavaScript ได้อย่างสะดวก",
-    },
-    {
-      id: 4,
-      title: "Props ทำงานอย่างไร?",
-      body: "Props คือ argument ที่ส่งให้ component เหมือนกับการส่งพารามิเตอร์ให้ฟังก์ชัน",
-    },
-  ]);
+  // เก็บเนื้อหาของโพสต์
+  const [body, setBody] = useState("");
 
-  // 2. สร้าง State สำหรับเก็บรายการที่กดถูกใจ
-  const [favorites, setFavorites] = useState([]);
+  // คำนวณจำนวนตัวอักษรที่เหลือของ title
+  const remaining = 100 - title.length;
 
-  const USERS = [
-    { id: 1, name: "สมชาย ใจดี", email: "somchai@dev.com" },
-    { id: 2, name: "สมหญิง รักเรียน", email: "somying@dev.com" },
-    { id: 3, name: "วิชาญ โค้ดเก่ง", email: "wichan@dev.com" },
-  ];
+  // เปลี่ยนสีตัวนับเป็นแดงเมื่อใกล้ถึงลิมิต
+  const counterColor = remaining < 10 ? "red" : "#718096";
 
-  // 3. ฟังก์ชันจัดการเมื่อผู้ใช้กดปุ่ม ❤️
-  function handleToggleFavorite(postId) {
-    setFavorites(
-      (prev) =>
-        prev.includes(postId)
-          ? prev.filter((id) => id !== postId) // ถ้าเคยกดแล้ว ให้เอาออก
-          : [...prev, postId], // ถ้ายังไม่เคยกด ให้เพิ่มเข้าไป
-    );
-  }
+  // จัดการตอนกดปุ่มโพสต์
+  function handleSubmit(e) {
+    e.preventDefault(); // กันหน้ารีเฟรช
 
-  // 4. ฟังก์ชันจัดการเมื่อผู้ใช้กด "โพสต์" จากใน AddPostForm
-  function handleAddPost({ title, body }) {
-    const newPost = { id: Date.now(), title, body };
-    setPosts((prev) => [newPost, ...prev]); // เอาโพสต์ใหม่ไปต่อหน้าโพสต์เดิม
+    // ถ้าชื่อเรื่องหรือเนื้อหาว่าง ห้ามส่ง
+    if (!title.trim() || !body.trim()) return;
+
+    // ส่งข้อมูลขึ้นไปให้ component แม่
+    onAddPost({ title, body });
+
+    setTitle("");
+    setBody("");
   }
 
   return (
-    <>
-      {/* ส่งจำนวนยอดคนถูกใจไปแสดงที่ Navbar */}
-      <Navbar favoriteCount={favorites.length} />
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        padding: "1rem",
+        marginBottom: "1.5rem",
+        background: "#f7fafc",
+      }}
+    >
+      <h3 style={{ margin: "0 0 0.75rem", color: "#2d3748" }}>
+        เพิ่มโพสต์ใหม่
+      </h3>
 
+      <input
+        type="text"
+        placeholder="หัวข้อโพสต์"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        maxLength={100} // จำกัด 100 ตัวอักษร
+        style={{
+          width: "100%",
+          padding: "0.5rem",
+          marginBottom: "0.5rem",
+          border: "1px solid #cbd5e0",
+          borderRadius: "4px",
+          fontSize: "1rem",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {/* ตัวนับจำนวนอักษรที่เหลือของหัวข้อ */}
       <div
         style={{
-          maxWidth: "900px",
-          margin: "2rem auto",
-          padding: "0 1rem",
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: "2rem",
+          textAlign: "right",
+          color: counterColor,
+          marginBottom: "0.5rem",
         }}
       >
-        {/* คอลัมน์ซ้าย */}
-        <div>
-          {/* 👈 เรียกใช้ AddPostForm และส่งฟังก์ชันเพิ่มโพสต์ให้มัน */}
-          <AddPostForm onAddPost={handleAddPost} />
-
-          {/* เรียกใช้ PostList และส่งข้อมูล+ฟังก์ชันไปให้ */}
-          <PostList
-            posts={posts}
-            favorites={favorites}
-            onToggleFavorite={handleToggleFavorite}
-          />
-        </div>
-
-        {/* คอลัมน์ขวา */}
-        <div>
-          <h2
-            style={{
-              color: "#2d3748",
-              borderBottom: "2px solid #1e40af",
-              paddingBottom: "0.5rem",
-            }}
-          >
-            สมาชิก
-          </h2>
-          {USERS.map((user) => (
-            <UserCard key={user.id} name={user.name} email={user.email} />
-          ))}
-        </div>
+        {title.length}/100
       </div>
-    </>
+
+      {/* ช่องใส่เนื้อหาโพสต์ */}
+      <textarea
+        placeholder="เนื้อหาโพสต์"
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        rows={3}
+        style={{
+          width: "100%",
+          padding: "0.5rem",
+          marginBottom: "0.75rem",
+          border: "1px solid #cbd5e0",
+          borderRadius: "4px",
+          fontSize: "1rem",
+          resize: "vertical",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {/* ปุ่มโพสต์ */}
+      <button
+        type="submit"
+        style={{
+          background: "#1e40af",
+          color: "white",
+          border: "none",
+          padding: "0.5rem 1.5rem",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontSize: "1rem",
+        }}
+      >
+        โพสต์
+      </button>
+    </form>
   );
 }
 
-export default App;
+export default AddPostForm;
